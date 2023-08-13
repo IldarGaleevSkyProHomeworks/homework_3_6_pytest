@@ -1,10 +1,17 @@
+import pytest
+
 from utils import dicts
 
 
-def test_get_val():
+@pytest.fixture()
+def test_data():
+    return {'key1': "val1", 'key2': "val2"}
 
-    test_data = {'key1': "val1", 'key2': "val2"}
 
-    assert dicts.get_val(test_data, 'key1', "default") == "val1"
-    assert dicts.get_val(test_data, 'key3', "default") == "default"
-    assert dicts.get_val(test_data, 'key3') == "git"
+@pytest.mark.parametrize("args, expected_result", [
+    (('key1', "default"), "val1"),
+    (('key3', "default"), "default"),
+    (('key3',), "git")
+])
+def test_get_val(test_data, args, expected_result):
+    assert dicts.get_val(test_data, *args) == expected_result
